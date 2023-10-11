@@ -4,14 +4,14 @@ package com.nhnacademy.aiot.Node;
 import java.util.Scanner;
 import com.nhnacademy.aiot.message.StringMessage;
 
-public class TerminalInNode extends InputNode{
+public class StandardInNode extends InputNode{
     Scanner sc;
 
-    public TerminalInNode(){
+    public StandardInNode(){
         this(1);
     }
 
-    public TerminalInNode(int count){
+    public StandardInNode(int count){
         super(count);
         
     }

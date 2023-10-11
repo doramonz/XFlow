@@ -4,13 +4,13 @@ import com.nhnacademy.aiot.message.LongMessage;
 import com.nhnacademy.aiot.message.Message;
 import com.nhnacademy.aiot.message.StringMessage;
 
-public class TerminalOutNode extends OutputNode {
+public class StandardOutNode extends OutputNode {
 
-    public TerminalOutNode() {
+    public StandardOutNode() {
         this(1);
     }
 
-    public TerminalOutNode(int count) {
+    public StandardOutNode(int count) {
         super(count);
     }
 

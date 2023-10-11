@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class ActiveNode extends Node implements Runnable {
     Thread thread;
     @Setter
-    long interval=1000;
+    long interval = 1000;
 
     boolean running;
     String name;
@@ -32,11 +32,11 @@ public abstract class ActiveNode extends Node implements Runnable {
         thread.interrupt();
     }
 
-    public void join() throws InterruptedException{
+    public void join() throws InterruptedException {
         thread.join();
     }
 
-    public void interrupt(){
+    public void interrupt() {
         Thread.currentThread().interrupt();
     }
 
@@ -46,7 +46,7 @@ public abstract class ActiveNode extends Node implements Runnable {
         running = true;
         long startTime = System.currentTimeMillis();
         long previousTime = startTime;
-
+        while (!Thread.currentThread().isInterrupted()) {
             long currentTime = System.currentTimeMillis();
             long elapsedTime = currentTime - previousTime;
             if (elapsedTime < interval) {
@@ -59,9 +59,9 @@ public abstract class ActiveNode extends Node implements Runnable {
                     Thread.currentThread().interrupt();
                 }
             }
-            previousTime = startTime + (System.currentTimeMillis() - startTime) / interval * interval;
-            
-        
+            previousTime =
+                    startTime + (System.currentTimeMillis() - startTime) / interval * interval;
+        }
         postprocess();
     }
 

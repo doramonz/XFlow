@@ -10,23 +10,25 @@ import com.nhnacademy.aiot.message.StringMessage;
 
 public class SocketInNode extends InputNode {
     Socket socket;
+    BufferedWriter writer;
+    BufferedReader terminalIn;
+    BufferedReader reader;
 
-    public SocketInNode(Socket socket) {
+    public SocketInNode(Socket socket) throws IOException {
         super(1);
         this.socket = socket;
+        this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.terminalIn = new BufferedReader(new InputStreamReader(System.in));
     }
 
     @Override
     void process() {
-        try (BufferedReader reader =
-                new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer=
-                    new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                BufferedReader terminalIn = new BufferedReader(new InputStreamReader(System.in));) {
+        try {
             String line = "";
-            while ((line = terminalIn.readLine()) != null) {
-                writer.write(line);
-                writer.flush();
+            while ((line = reader.readLine()) != null) {
+                
+                System.out.println(line);
                 output(new StringMessage(line));
             }
         } catch (IOException e) {

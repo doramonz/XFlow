@@ -13,7 +13,15 @@ public class RNGNode extends InputOutputNode{
 
     @Override
     void process() {
-        boolean accept = true;
+        boolean accept=false;
+        while(!accept){
+            for(int i=0;i<getPortCount();i++){
+                Port port = getPort(i);
+                if(port.hasMessage()){
+                    accept=true;
+                }
+            }
+        }
         for (int i = 0; i < getPortCount(); i++) {
             accept &= getPort(i).hasMessage();
         }
