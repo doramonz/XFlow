@@ -26,10 +26,11 @@ public class SocketInNode extends InputNode {
     void process() {
         try {
             String line = "";
+            output(new StringMessage(reader.readLine()));
             while ((line = reader.readLine()) != null) {
                 
-                System.out.println(line);
-                output(new StringMessage(line));
+                // System.out.println(line);
+                // output(new StringMessage(line));
             }
         } catch (IOException e) {
 
