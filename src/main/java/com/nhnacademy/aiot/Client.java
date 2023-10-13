@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import com.nhnacademy.aiot.Node.SocketInNode;
 import com.nhnacademy.aiot.Node.SocketOutNode;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Hello world!
  *
  */
+@Slf4j
 public class Client {
     public static void main(String[] args) throws InterruptedException {
         try (Socket socket = new Socket("ems.nhnacademy.com", 1880);) {
@@ -25,7 +25,7 @@ public class Client {
                     new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    writer.write("GET /dev HTTP/1.1\n\n");
+                    writer.write("GET /ep/temperature/24e124126c457594?count=40&st=1696772438&et=1696772438 HTTP/1.1\n\n");
                     // writer.write("Host: ems.nhnacademy.com:1880\n\n");
                     writer.flush();
             String line="";
@@ -33,30 +33,31 @@ public class Client {
             int byteRead;
             StringBuilder sb = new StringBuilder();
             boolean data=false;
+            int len=0;
             while((line=reader.readLine())!=null){
-                // System.out.println(line);
-                if(line.equals("")){
-                    data=true;
-                    
+                if(line.contains("Content-Length:")){
+                    len=Integer.parseInt(line.split(" ")[1]);
                 }
-                if(data){
-                    sb.append(line);
+                if(line.equals("")){
+                    break;
                 }
             }
-            System.out.println(sb.toString());
-            JSONParser parse = new JSONParser();
-            Object object = parse.parse(sb.toString());
-            org.json.simple.JSONArray json = (org.json.simple.JSONArray)object;
+            char[] datas = new char[len];
+            reader.read(datas);
+            System.out.println(new String(datas));
             
-            System.out.println(json);
+            // System.out.println(sb.toString());
+            // JSONParser parse = new JSONParser();
+            // Object object = parse.parse(sb.toString());
+            // org.json.simple.JSONArray json = (org.json.simple.JSONArray)object;
+            
+            // System.out.println();
             // System.out.println(socket.getInetAddress());
             // socketOutNode.start();
             // socketInNode.start();
             // socketOutNode.join();
         } catch (IOException e) {
 
-        }catch(ParseException e){
-            
         }
 
 

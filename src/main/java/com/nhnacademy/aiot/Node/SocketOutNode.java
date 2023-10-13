@@ -6,9 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.Date;
 import org.json.JSONObject;
-import com.nhnacademy.aiot.message.LongMessage;
+import com.nhnacademy.aiot.message.JsonMessage;
 import com.nhnacademy.aiot.message.Message;
 
 public class SocketOutNode extends InputOutputNode {
@@ -42,26 +41,38 @@ public class SocketOutNode extends InputOutputNode {
             if (accept) {
                 for (int i = 0; i < getPortCount(); i++) {
                     Message message = getPort(i).get();
-                    JSONObject object = new JSONObject();
-                    Long payLoad = ((LongMessage) message).getPayLoad();
-                    object.put("server", payLoad);
+                    if (message instanceof JsonMessage) {
+                        JSONObject data = ((JsonMessage) message).getPayLoad();
+                        writer.write("HTTP/1.1 " + "200 OK" + "\n");
+                        writer.write("Access-Control-Allow-Origin: *" + "\n");
+                        writer.write("Content-type: text/json; charset=UTF-8" + "\n");
+                        writer.write("Content-Length: " + data.toString().length() + "\n" + "\n");
+                        writer.flush();
+                        writer.write(data.toString() + "\n");
+                        writer.flush();
+                    }
+                    // JSONObject object = new JSONObject();
+                    // Long payLoad = ((LongMessage) message).getPayLoad();
+                    // object.put("server", payLoad);
 
-                    writer.write("HTTP/1.1 " + "200 OK" + newLine);
-                    writer.write("Server: Hyeonseon9's" + newLine);
-                    writer.write("Date: " + new Date() + newLine);
-                    writer.write("Content-type: text/html; charset=UTF-8" + newLine);
-                    writer.write(
-                            "Content-Length: " + object.toString().length() + newLine + newLine);
-                    writer.write(object + newLine);
-                    writer.flush();
+                    // writer.write("HTTP/1.1 " + "200 OK" + newLine);
+                    // writer.write("Server: Hyeonseon9's" + newLine);
+                    // writer.write("Date: " + new Date() + newLine);
+                    // writer.write("Content-type: text/html; charset=UTF-8" + newLine);
+                    // writer.write(
+                    // "Content-Length: " + object.toString().length() + newLine + newLine);
+                    // writer.write(object + newLine);
+                    // writer.flush();
 
-                    output(message);
+                    // output(message);
                 }
-
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
 
         }
+        // catch (IOException e) {
+
+        // }
 
 
         // try {

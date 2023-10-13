@@ -19,8 +19,6 @@ public class RequestNode extends InputOutputNode {
 
     @Override
     void process() {
-        boolean accept = false;
-
         for (int i = 0; i < getPortCount(); i++) {
             Port port = getPort(i);
             if (port.hasMessage()) {
@@ -29,7 +27,7 @@ public class RequestNode extends InputOutputNode {
                 String method = request[0];
                 String path = request[1];
                 String version = request[2];
-
+                System.out.println("request"+((StringMessage) message).getPayLoad());
                 try {
                     BufferedWriter writer =
                             new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -55,6 +53,7 @@ public class RequestNode extends InputOutputNode {
                     writer.flush();
                     writer.write(json.toString() + "\n");
                     writer.flush();
+                    interrupt();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -63,6 +62,7 @@ public class RequestNode extends InputOutputNode {
 
         }
     }
+
 
 
 }
