@@ -1,78 +1,129 @@
 package com.nhnacademy.aiot.Node.TCPServer;
 
-import java.util.List;
+import org.json.JSONObject;
 
 public class Message {
-    enum DataType {
-        INT, STRING, CHAR, BOOL, LIST, INT_ARRAY
-    }
+    JSONObject json;
 
-    DataType dataType;
-    int intData;
-    String stringData;
-    char charData;
-    boolean boolData;
-    List<Object> listData;
-    int[] intArrayData;
-
-    public Message(int data) {
+    public Message() {
         super();
-        this.intData = data;
-        dataType = DataType.INT;
+        json = new JSONObject();
     }
 
-    public Message(String data) {
-        super();
-        this.stringData = data;
-        dataType = DataType.STRING;
+    public Message setData(String data) {
+        json.put("data", data);
+        return this;
     }
 
-    public Message(char data) {
-        super();
-        this.charData = data;
-        dataType = DataType.CHAR;
+    public boolean hasData() {
+        return json.has("data");
     }
 
-    public Message(boolean data) {
-        super();
-        this.boolData = data;
-        dataType = DataType.BOOL;
+    public String getData() {
+        if (json.has("data")) {
+            return json.get("data").toString();
+        }
+        return null;
+    }
+    //ip:port
+    public Message setIpPort(String ipPort) {
+        json.put("ip-port", ipPort);
+        return this;
     }
 
-    public Message(List<Object> data) {
-        super();
-        this.listData = data;
-        dataType = DataType.LIST;
+    public boolean hasipPort() {
+        return json.has("ip-port");
     }
 
-    public Message(int[] data) {
-        super();
-        this.intArrayData = data;
-        dataType = DataType.INT_ARRAY;
+    public String getipPort() {
+        if (json.has("ip-port")) {
+            return json.get("ip-port").toString();
+        }
+        return null;
     }
 
-    public Object getData() {
-        if (dataType == DataType.INT) {
-            return intData;
-        } else if (dataType == DataType.STRING) {
-            return stringData;
-        } else if (dataType == DataType.LIST) {
-            return listData;
-        } else if (dataType == DataType.INT_ARRAY) {
-            return intArrayData;
-        } else if (dataType == DataType.CHAR) {
-            return charData;
-        } else if (dataType == DataType.BOOL) {
-            return boolData;
-        } 
+    public Message setMethod(String method) {
+        json.put("method", method);
+        return this;
+    }
 
+    public Message setGetType(String getType) {
+        json.put("get-type", getType);
+        return this;
+    }
+
+    public Message setStartTime(String startTime) {
+        json.put("start-time", startTime);
+        return this;
+    }
+
+    public Message setEndTime(String endTime) {
+        json.put("end-time", endTime);
+        return this;
+    }
+
+    public Message setTimeType(String timeType) {
+        json.put("time-type", timeType);
+        return this;
+    }
+
+    public boolean hasMethod() {
+        return json.has("method");
+    }
+
+    public String getMethod() {
+        if (json.has("method")) {
+            return json.get("method").toString();
+        }
+        return null;
+    }
+    
+    public boolean hasGetType() {
+        return json.has("get-type");
+    }
+
+    public String getGetType() {
+        if (json.has("get-type")) {
+            return json.get("get-type").toString();
+        }
+        return null;
+    }
+
+    public boolean hasStartTime() {
+        return json.has("start-time");
+    }
+
+    public String getStartTime() {
+        if (json.has("start-time")) {
+            return json.get("start-time").toString();
+        }
+        return null;
+    }
+
+    public boolean hasEndTime() {
+        return json.has("end-time");
+    }
+
+    public String getEndTime() {
+        if (json.has("end-time")) {
+            return json.get("end-time").toString();
+        }
+        return null;
+    }
+
+    public boolean hasTimeType() {
+        return json.has("time-type");
+    }
+
+    public String getTimeType() {
+        if (json.has("time-type")) {
+            return json.get("time-type").toString();
+        }
         return null;
     }
 
     public static void main(String[] args) {
-        Message msg = new Message(1);
-        System.out.println(msg.getData());
-        msg = new Message("Hello");
-        System.out.println(msg.getData());
+        Message message = new Message().setData("haha");
+        System.out.println(message.json.toString());
     }
 }

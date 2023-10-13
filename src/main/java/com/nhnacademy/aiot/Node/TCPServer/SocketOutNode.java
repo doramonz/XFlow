@@ -36,8 +36,9 @@ public class SocketOutNode extends ActiveNode {
                     if (message == null) {
                         continue;
                     }
-                    for (Client client : ClientManager.getInstance().getClients()) {
-                        client.send((String) message.getData()+"\n");
+                    if (message.json.has("ip-port")) {
+                        String destination = message.json.getString("ip-port");
+                        ClientManager.getInstance().getClient(destination).send((String) message.getData() + "\n");
                     }
                 } catch (InterruptedException e) {
                     log(e.getMessage());

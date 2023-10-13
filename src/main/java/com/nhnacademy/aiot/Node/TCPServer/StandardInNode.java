@@ -33,7 +33,7 @@ public class StandardInNode extends ActiveNode {
         String message = scanner.nextLine();
         for (NodeConnector port : outputConnectors) {
             if (port != null)
-                port.push(new Message(message));
+                port.push(new Message().setData(message));
         }
     }
 }

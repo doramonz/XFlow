@@ -16,16 +16,27 @@ public class HTTPServerNode extends ActiveNode {
     }
 
     void connectPort() {
-        StandardInNode standardInNode = new StandardInNode(1);
-        StandardOutNode standardOutNode = new StandardOutNode(1);
-        SocketInNode socketInNode = new SocketInNode(1);
-        SocketOutNode socketOutNode = new SocketOutNode(1);
+        StandardInNode standardInNode = new StandardInNode(10);
+        StandardOutNode standardOutNode = new StandardOutNode(10);
+        SocketInNode socketInNode = new SocketInNode(10,10);
+        SocketOutNode socketOutNode = new SocketOutNode(10);
         NodeConnector standardInNodeToSocketOutNode = new NodeConnector();
         NodeConnector socketInNodeToStandardOutNode = new NodeConnector();
         standardInNode.connectOutput(0, standardInNodeToSocketOutNode);
         socketOutNode.connectInput(0, standardInNodeToSocketOutNode);
         socketInNode.connectOutput(0, socketInNodeToStandardOutNode);
         standardOutNode.connectInput(0, socketInNodeToStandardOutNode);
+        NodeConnector socketInNodetoSocketOutNode = new NodeConnector();
+        socketInNode.connectOutput(1, socketInNodetoSocketOutNode);
+        socketOutNode.connectInput(1, socketInNodetoSocketOutNode);
+        URLNode urlNode = new URLNode(1, 1);
+        NodeConnector socketInNodetourlNode = new NodeConnector();
+        NodeConnector urlNodetoSocketOut = new NodeConnector();
+        urlNode.connectInput(0, socketInNodetourlNode);
+        urlNode.connectOutput(0, urlNodetoSocketOut);
+        socketOutNode.connectInput(2, urlNodetoSocketOut);
+        socketInNode.connectOutput(2, socketInNodetourlNode);
+        urlNode.start();
 
         standardInNode.start();
         standardOutNode.start();

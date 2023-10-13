@@ -22,6 +22,27 @@ public abstract class ActiveNode extends Node implements Runnable {
         this.interval = interval;
     }
 
+    public void checkNodeConnect(NodeConnector[] nodeConnector, int index, NodeConnector port) throws IndexOutOfBoundsException, IllegalArgumentException, NullPointerException {
+        if (index < 0 || index >= nodeConnector.length) {
+            throw new IndexOutOfBoundsException("Index out of bound");
+        }
+        if (nodeConnector[index] != null) {
+            throw new IllegalArgumentException("Already connected");
+        }
+        if (port == null) {
+            throw new NullPointerException("port is null");
+        }
+    }
+    
+    public void checkNodedisconnect(NodeConnector[] nodeConnector, int index) throws IndexOutOfBoundsException, NullPointerException {
+        if (index < 0 || index >= nodeConnector.length) {
+            throw new IndexOutOfBoundsException("Index out of bound");
+        }
+        if(nodeConnector[index] == null) {
+            throw new NullPointerException("port is null");
+        }
+    }
+
     public abstract void preProcess();
 
     public abstract void postProcess();

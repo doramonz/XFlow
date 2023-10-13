@@ -1,20 +1,18 @@
 package com.nhnacademy.aiot.Node.TCPServer;
 
-public class FilterNode extends ActiveNode {
+import java.util.Calendar;
+
+import org.json.JSONObject;
+
+public class ResponseMakeNode extends ActiveNode {
     private NodeConnector[] inputConnectors;
     private NodeConnector[] outputConnectors;
-    private String key;
-    private String value;
+    private Calendar calendar = Calendar.getInstance();
 
-    public FilterNode(int inputCount, int outputCount) {
+    public ResponseMakeNode(int inputCount, int outputCount) {
         super();
         inputConnectors = new NodeConnector[inputCount];
         outputConnectors = new NodeConnector[outputCount];
-    }
-
-    public void setFilter(String key, String value) {
-        this.key = key;
-        this.value = value;
     }
 
     public void connectInput(int index, NodeConnector port) {
@@ -73,14 +71,16 @@ public class FilterNode extends ActiveNode {
                     if (message == null) {
                         continue;
                     }
-                    if (message.json.has(key)) {
-                        if (message.json.get(key).equals(message.json.get(value))) {
-                            for (NodeConnector outputPort : outputConnectors) {
-                                if (outputPort != null) {
-                                    outputPort.push(message);
-                                }
-                            }
+                    if (message.hasMethod()) {
+                        if(message.hasStartTime()){
+                            
+                        }else{
+                            JSONObject jsonObject = new JSONObject();
+                            String strDate = String.format("%s-%s-%s %s:%s:%s", String.valueOf(calendar.get(Calendar.YEAR)),String.valueOf(calendar.get(Calendar.MONTH)),String.valueOf(calendar.get(Calendar.DATE)),String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)),String.valueOf(calendar.get(Calendar.MINUTE)),String.valueOf(calendar.get(Calendar.SECOND)));
+                            jsonObject.put("dateTime", strDate);
                         }
+                    } else {
+                        log("ERROR : No Method");
                     }
                 } catch (InterruptedException e) {
                     log(e.getMessage());
