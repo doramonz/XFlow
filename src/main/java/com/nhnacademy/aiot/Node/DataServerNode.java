@@ -48,13 +48,13 @@ public class DataServerNode extends InputOutputNode {
                     currentTime -= 500;
                     Date date = new Date(currentTime*1000L);
                     if (path.equals("/humidity")) {
-                        writer.write("GET /ep/humidity/24e124126c457594?count=1&st=" + startTime
+                        writer.write("GET /ep/humidity/24e124126c457594?count=1&st=" + currentTime
                                 + "&et=" + currentTime + " HTTP/1.1\n\n");
                         writer.flush();
                         sensor="humidity";
 
                     } else if (path.equals("/temperature")) {
-                        writer.write("GET /ep/temperature/24e124126c457594?count=1&st=" + startTime
+                        writer.write("GET /ep/temperature/24e124126c457594?count=1&st=" + currentTime
                                 + "&et=" + currentTime + " HTTP/1.1\n\n");
                         writer.flush();
                         sensor="temperature";

@@ -21,7 +21,6 @@ public class FillterNode extends InputOutputNode {
                     Message message = getPort(i).get();
                     if (message instanceof JsonMessage) {
                         JSONObject data = ((JsonMessage) message).getPayLoad();
-
                         String date = data.getString("time");
                         date = date.replaceAll("[a-zA-Z]", " ");
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

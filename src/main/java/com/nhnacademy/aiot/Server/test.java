@@ -21,7 +21,7 @@ public class test {
 
         long cur = System.currentTimeMillis();
         cur/=1000;
-        long start =cur-2000;
+        long start =cur-500;
         System.out.println(cur);
         Date date = new Date(start*1000L);
         System.out.println(date);
