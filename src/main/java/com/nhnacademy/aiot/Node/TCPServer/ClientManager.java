@@ -16,29 +16,29 @@ public class ClientManager {
         blackList = new JSONObject();
     }
 
-    public static ClientManager getInstance() {
+    public synchronized static ClientManager getInstance() {
         if (instance == null)
             instance = new ClientManager();
         return instance;
     }
 
-    public void addClient(Client client) {
+    public synchronized void addClient(Client client) {
         clients.add(client);
     }
 
-    public void removeClient(Client client) {
+    public synchronized void removeClient(Client client) {
         clients.remove(client);
     }
 
-    public void removeClient(int index) {
+    public synchronized void removeClient(int index) {
         clients.remove(index);
     }
 
-    public Client getClient(int index) {
+    public synchronized Client getClient(int index) {
         return clients.get(index);
     }
 
-    public Client getClient(String destination){
+    public synchronized Client getClient(String destination){
         for(Client client : clients){
             if(client.getDestination().equals(destination)){
                 return client;
@@ -47,19 +47,19 @@ public class ClientManager {
         return null;
     }
 
-    public int getClientIndex(Client client) {
+    public synchronized int getClientIndex(Client client) {
         return clients.indexOf(client);
     }
 
-    public int getClientCount() {
+    public synchronized int getClientCount() {
         return clients.size();
     }
 
-    public Iterable<Client> getClients() {
+    public synchronized Iterable<Client> getClients() {
         return clients;
     }
 
-    public boolean contains(Client client) {
+    public synchronized boolean contains(Client client) {
         return clients.contains(client);
     }
 

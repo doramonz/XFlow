@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.json.JSONObject;
+
 public class HTTPRequestNode extends ActiveNode {
     private NodeConnector[] inputConnectors;
     private NodeConnector[] outputConnectors;
@@ -98,7 +100,10 @@ public class HTTPRequestNode extends ActiveNode {
             }
             if (!dataString.toString().isEmpty()) {
                 String jsonString = dataString.toString().replaceAll("[\\[\\]]", "");
-                result.setData(jsonString);
+                JSONObject jsonObject = new JSONObject(jsonString);
+                jsonObject.put("sensor", message.getGetType().replace("/", ""));
+                result.setData(jsonObject.toString());
+                System.out.println(result.getData());
                 result.setIpPort(message.getipPort());
             }
         } catch (IOException e) {
@@ -132,6 +137,7 @@ public class HTTPRequestNode extends ActiveNode {
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     request(message);
                     Message result = receive(message);
+                    result.setIpPort(message.getipPort());
                     socket.close();
                     for (NodeConnector output : outputConnectors) {
                         if (output != null) {

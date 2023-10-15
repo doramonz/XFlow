@@ -1,6 +1,5 @@
 package com.nhnacademy.aiot.Node.TCPServer;
 
-import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -40,18 +39,18 @@ public class SocketOutNode extends ActiveNode {
                     if (message == null) {
                         continue;
                     }
-                    log(message.getData());
                     if (message.json.has("ip-port")) {
+                        JSONParser parser = new JSONParser();
                         String destination = message.json.getString("ip-port");
                         Client client = ClientManager.getInstance().getClient(destination);
                         client.send("HTTP/1.1 " + "200 OK" + "\n");
                         client.send("Access-Control-Allow-Origin: *" + "\n");
                         client.send("Content-type: text/json; charset=UTF-8" + "\n");
-                        client.send("Content-Length: " + message.json.toString().length() + "\n" + "\n");
+                        Object data = parser.parse(message.getData());
+                        client.send("Content-Length: " + data.toString().length() + "\n" + "\n");
+                        log(data.toString());
                         client.flush();
-                        JSONParser parser = new JSONParser();
-                        log(parser.parse(message.getData())+ "\n");
-                        client.send(parser.parse(message.getData())+ "\n");
+                        client.send(data + "\n" + "\n");
                         client.flush();
                     }
                 } catch (InterruptedException e) {

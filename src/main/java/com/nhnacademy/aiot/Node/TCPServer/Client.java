@@ -16,7 +16,7 @@ public class Client extends ActiveNode {
     private String ip;
     private String port;
     private String enterTime;
-    private NodeConnector outputConnector;
+    private NodeConnector outputConnector = new NodeConnector();
 
     public Client(Socket socket) {
         super();
@@ -24,7 +24,7 @@ public class Client extends ActiveNode {
         ip = socket.getInetAddress().toString();
         port = String.valueOf(socket.getPort());
         enterTime = String.valueOf(System.currentTimeMillis());
-        outputConnector = new NodeConnector();
+        // outputConnector = SocketInNode.getInputConnector();
         SocketInNode.connectInput(outputConnector);
         try {
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -87,7 +87,7 @@ public class Client extends ActiveNode {
 
     @Override
     public void postProcess() {
-        SocketInNode.disconnectInput(outputConnector);
+        // SocketInNode.disconnectInput(outputConnector);
     }
 
     @Override
@@ -99,16 +99,13 @@ public class Client extends ActiveNode {
             StringBuilder dataString = new StringBuilder();
             int len = 0;
             while ((line = reader.readLine()) != null) {
-                if (line.contains("Content-Length:")) {
-                    len = Integer.parseInt(line.split(" ")[1]);
-                }
                 if (line.equals("")) {
                     break;
                 }
             }
             getOutputConnector().push(new Message().setData(header).setIpPort(getDestination()));
             SocketInNode.disconnectInput(outputConnector);
-            Thread.currentThread().interrupt();
+            stop();
         } catch (IOException e) {
             log("Client disconnected");
             log(e.getMessage());
@@ -131,4 +128,3 @@ public class Client extends ActiveNode {
 
 // }
 // output(new StringMessage(header));
-// interrupt();

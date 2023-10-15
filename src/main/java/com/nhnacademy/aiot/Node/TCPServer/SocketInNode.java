@@ -1,14 +1,19 @@
 package com.nhnacademy.aiot.Node.TCPServer;
 
 public class SocketInNode extends ActiveNode {
-    private static NodeConnector[] inputConnectors;;
+    private static NodeConnector[] inputConnectors;
     private NodeConnector[] outputConnectors;
+    // private static NodeConnector inputConnectors = new NodeConnector();
 
     public SocketInNode(int inputCount, int outputCount) {
         super();
         inputConnectors = new NodeConnector[inputCount];
         outputConnectors = new NodeConnector[outputCount];
     }
+
+    // public static NodeConnector getInputConnector() {
+    //     return inputConnectors;
+    // }
 
     public static void connectInput(NodeConnector inputConnector) {
         for (int i = 0; i < inputConnectors.length; i++) {

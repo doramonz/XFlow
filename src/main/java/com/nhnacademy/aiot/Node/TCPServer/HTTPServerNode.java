@@ -26,17 +26,21 @@ public class HTTPServerNode extends ActiveNode {
         NodeConnector socketInNodeToStandardOutNode = new NodeConnector();
         NodeConnector socketInNodeToURLNode = new NodeConnector();
         NodeConnector urlNodeToHTTPRequestNode = new NodeConnector();
-        NodeConnector httpRequestNodeToSocketOutNode = new NodeConnector();
+        RequestMessageMakeNode requestMessageMakeNode = new RequestMessageMakeNode(100,100);
+        NodeConnector httpRequestNodeToRequestMessageMakeNode = new NodeConnector();
+        NodeConnector requestMessageMakeNodeToSocketOutNode = new NodeConnector();
         standardInNode.connectOutput(0, standardInNodeToSocketOutNode);
         socketInNode.connectOutput(0, socketInNodeToStandardOutNode);
         socketInNode.connectOutput(1, socketInNodeToURLNode);
         urlNode.connectOutput(0, urlNodeToHTTPRequestNode);
-        httpRequestNode.connectOutput(0, httpRequestNodeToSocketOutNode);
+        httpRequestNode.connectOutput(0, httpRequestNodeToRequestMessageMakeNode);
         socketOutNode.connectInput(0, standardInNodeToSocketOutNode);
         standardOutNode.connectInput(0, socketInNodeToStandardOutNode);
-        socketOutNode.connectInput(1, httpRequestNodeToSocketOutNode);
+        socketOutNode.connectInput(1, requestMessageMakeNodeToSocketOutNode);
         urlNode.connectInput(0, socketInNodeToURLNode);
         httpRequestNode.connectInput(0, urlNodeToHTTPRequestNode);
+        requestMessageMakeNode.connectInput(0, httpRequestNodeToRequestMessageMakeNode);
+        requestMessageMakeNode.connectOutput(0, requestMessageMakeNodeToSocketOutNode);
 
         standardInNode.start();
         standardOutNode.start();
@@ -44,6 +48,7 @@ public class HTTPServerNode extends ActiveNode {
         socketOutNode.start();
         urlNode.start();
         httpRequestNode.start();
+        requestMessageMakeNode.start();
     }
 
     @Override
