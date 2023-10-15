@@ -51,23 +51,15 @@ public class URLNode extends ActiveNode {
         }
     }
 
-    public String[] urlParse(String url) {
-        if (url.contains("?")) {
-            String[] result = new String[5];
-            result[0] = url.split(" ")[0];
-            System.out.println(url.split("//")[1].split("/")[1]);
-            result[1] = url.split("//")[1].split("/")[1].split("\\?format")[0];
-            result[2] = url.split("startDt=")[1].split("&")[0];
-            result[3] = url.split("endDt=")[1].split("&")[0];
-            result[4] = url.split("unit=")[1];
-            return result;
-        } else if (url.contains("/")) {
-            String[] result = new String[2];
-            result[0] = url.split(" ")[0];
-            result[1] = url.split("//")[1].split("/")[1];
-            return result;
-        }
-        return null;
+    public Message urlParse(Message message) {
+        String[] request = message.getData().split(" ");
+        String method = request[0];
+        String path = request[1];
+        String version = request[2];
+        String sensor = "";
+        message.setMethod(method);
+        message.setGetType(path);
+        return message;
     }
 
     @Override
@@ -90,23 +82,7 @@ public class URLNode extends ActiveNode {
                     if (message == null) {
                         continue;
                     }
-                    BufferedReader reader = new BufferedReader(new StringReader((String) message.getData()));
-                    String[] url = urlParse(reader.readLine());
-                    if (url == null) {
-                        continue;
-                    }
-                    if (url.length == 2) {
-                        message.setMethod(url[0]);
-                        message.setGetType(url[1]);
-                    } else if (url.length == 5) {
-                        message.setMethod(url[0]);
-                        message.setGetType(url[1]);
-                        message.setStartTime(url[2]);
-                        message.setEndTime(url[3]);
-                        message.setTimeType(url[4]);
-                    } else {
-                        continue;
-                    }
+                    message = urlParse(message);
                     for (NodeConnector outputPort : outputConnectors) {
                         if (outputPort != null) {
                             outputPort.push(message);
@@ -114,11 +90,23 @@ public class URLNode extends ActiveNode {
                     }
                 } catch (InterruptedException e) {
                     log(e.getMessage());
-                } catch (IOException e) {
-                    log(e.getMessage());
                 }
             }
         }
     }
 
 }
+
+// JSONObject data = ((JsonMessage) message).getPayLoad();
+// String date = data.getString("time");
+// date = date.replaceAll("[a-zA-Z]", " ");
+// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+// Date currentDate= sdf.parse(date);
+// String jsonDate = sdf.format(currentDate);
+// String sensor = data.getString("sensor");
+// int value = data.getInt("value");
+
+// JSONObject outputData = new JSONObject();
+// outputData.put("dateTime", jsonDate);
+// outputData.put(sensor,value);
+// output(new JsonMessage(outputData));

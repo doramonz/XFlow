@@ -1,14 +1,18 @@
 package com.nhnacademy.aiot.Node.TCPServer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class Client extends ActiveNode {
     private Socket socket;
-    private OutputStream outputStream;
-    private InputStream inputStream;
+    private BufferedWriter writer;
+    private BufferedReader reader;
     private String ip;
     private String port;
     private String enterTime;
@@ -23,8 +27,8 @@ public class Client extends ActiveNode {
         outputConnector = new NodeConnector();
         SocketInNode.connectInput(outputConnector);
         try {
-            outputStream = socket.getOutputStream();
-            inputStream = socket.getInputStream();
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
         }
         start();
@@ -36,11 +40,25 @@ public class Client extends ActiveNode {
 
     public void send(String message) {
         try {
-            outputStream.write(message.getBytes());
-            outputStream.flush();
+            writer.write(message);
         } catch (IOException e) {
         }
     }
+
+    public void flush() {
+        try {
+            writer.flush();
+        } catch (IOException e) {
+        }
+    }
+
+    // writer.write("HTTP/1.1 " + "200 OK" + "\n");
+    // writer.write("Access-Control-Allow-Origin: *" + "\n");
+    // writer.write("Content-type: text/json; charset=UTF-8" + "\n");
+    // writer.write("Content-Length: " + data.toString().length() + "\n" + "\n");
+    // writer.flush();
+    // writer.write(data.toString() + "\n");
+    // writer.flush();
 
     public String getIp() {
         return ip;
@@ -69,25 +87,48 @@ public class Client extends ActiveNode {
 
     @Override
     public void postProcess() {
-
+        SocketInNode.disconnectInput(outputConnector);
     }
 
     @Override
     public void process() {
         try {
-            byte[] buffer = new byte[1024];
-            int length = inputStream.read(buffer);
-            if (length == -1) {
-                throw new IOException("Connection closed");
+            String line = reader.readLine();
+            log("receive: " + line);
+            String header = line;
+            StringBuilder dataString = new StringBuilder();
+            int len = 0;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Content-Length:")) {
+                    len = Integer.parseInt(line.split(" ")[1]);
+                }
+                if (line.equals("")) {
+                    break;
+                }
             }
-            String message = new String(buffer, 0, length);
-            getOutputConnector().push(new Message().setData(message).setIpPort(getDestination()));
+            getOutputConnector().push(new Message().setData(header).setIpPort(getDestination()));
+            SocketInNode.disconnectInput(outputConnector);
+            Thread.currentThread().interrupt();
         } catch (IOException e) {
+            log("Client disconnected");
             log(e.getMessage());
-            if (ClientManager.getInstance().contains(this))
-                ClientManager.getInstance().removeClient(this);
             SocketInNode.disconnectInput(outputConnector);
             Thread.currentThread().interrupt();
         }
     }
 }
+
+// String line = reader.readLine();
+// log.info(line);
+// String header = line;
+// StringBuilder dataString = new StringBuilder();
+// boolean data = false;
+// int len = 0;
+// while ((line = reader.readLine()) != null) {
+// if (line.equals("")) {
+// break;
+// }
+
+// }
+// output(new StringMessage(header));
+// interrupt();

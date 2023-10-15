@@ -26,7 +26,7 @@ public class ClientConnectNode extends ActiveNode {
             try {
                 Socket socket = serverSocket.accept();
                 ClientManager.getInstance().addClient(new Client(socket));
-                log("Client connected");
+                log("Client connected"+socket.getInetAddress().toString()+":"+socket.getPort());
             } catch (IOException e) {
                 log(e.getMessage());
             }
